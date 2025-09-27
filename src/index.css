@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* (opcjonalnie) Twoje dopiski globalne: 
+:root { --border: 220 13% 91%; }
+*/
+:root { scroll-padding-top: 6rem; }          /* ~96px – odstęp od navbara */
+@media (min-width: 768px) {
+  :root { scroll-padding-top: 7rem; }        /* ~112px na desktopie */
+}
+html { scroll-behavior: smooth; }
+/* Zapobiega rozlaniu siatki/flexów przez długie treści na bardzo wąskich ekranach */
+*,
+*::before,
+*::after {
+  min-width: 0; /* bezpieczne dla grid/flex children */
+}
+
+/* Dodatkowo, jeśli masz w okienku kodu długie linie — złam je zamiast rozpychać stronę */
+.code-window-glow,
+.code-window {
+  overflow-x: auto;      /* jeśli naprawdę musi przewinąć, niech przewija tylko okienko */
+  max-width: 100%;
+}
+
+
+.bg-hero-gradient {
+  background:
+    radial-gradient(60rem 30rem at 20% 10%, rgba(99, 102, 241, 0.25), transparent 60%),
+    radial-gradient(40rem 20rem at 80% 20%, rgba(34, 197, 94, 0.2), transparent 60%);
+}
+
+/* animowane podkreślenie linków w navbarze */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  transition: background-size 200ms ease;
+}
+.link-underline:hover {
+  background-size: 100% 2px;
+}
+.link-underline--active {
+  background-size: 100% 2px;
+}
+
+/* Akcent na mobile: pasek po lewej dla aktywnej pozycji */
+.mobile-item {
+  position: relative;
+}
+.mobile-item::before {
+  content: "";
+  position: absolute;
+  left: 10px;            /* odstęp od krawędzi panela */
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0); /* emerald-500, ale niewidoczny */
+  transform: scaleY(0.6);
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+.mobile-item.active::before {
+  background: rgb(16, 185, 129);     /* emerald-500 */
+  transform: scaleY(1);
+}
+
+/* start: lekko niżej i transparent */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.reveal-in { opacity: 1; transform: translateY(0); }
+
+/* warianty opóźnień (opcjonalnie) */
+.reveal-delay-1 { transition-delay: .06s; }
+.reveal-delay-2 { transition-delay: .12s; }
+.reveal-delay-3 { transition-delay: .18s; }
+
+@keyframes floatY {
+  0% { transform: translateY(0) }
+  50% { transform: translateY(-6px) }
+  100% { transform: translateY(0) }
+}
+@keyframes softGlow {
+  0%,100% { box-shadow: 0 10px 30px rgba(16,185,129,.18) }
+  50% { box-shadow: 0 14px 36px rgba(16,185,129,.28) }
+}
+.avatar-float {
+  animation: floatY 5s ease-in-out infinite;
+  will-change: transform;
+}
+.avatar-glow {
+  animation: softGlow 4.5s ease-in-out infinite;
+  border-radius: 9999px;
+}
+
+@keyframes panelGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(99,102,241,0.0) }
+  50% { box-shadow: 0 0 25px rgba(99,102,241,0.12) } /* indigo-500 */
+}
+.code-window-glow { animation: panelGlow 6s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    rgba(244,244,245,1) 0%,
+    rgba(228,228,231,1) 20%,
+    rgba(244,244,245,1) 40%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer { animation: none; }
+}
+
+/* Błysk/połysk na hover (subtelny) */
+.pill-sheen::after {
+  content: "";
+  position: absolute;
+  inset: -2px -8px;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform .5s ease;
+  pointer-events: none;
+  border-radius: 9999px;
+}
+.pill-sheen:hover::after { transform: translateX(0%); }
+
+/* Animacje ikon (lightweight) */
+@keyframes spin-slower { to { transform: rotate(360deg); } }
+.animate-spin-slower { animation: spin-slower 14s linear infinite; }
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-4deg); }
+}
+.animate-wiggle { animation: wiggle 2.2s ease-in-out infinite; }
+
+@keyframes wiggle-slow {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2deg); }
+}
+.animate-wiggle-slow { animation: wiggle-slow 3.2s ease-in-out infinite; }
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: .92; }
+}
+.animate-pulse-soft { animation: pulse-soft 2.6s ease-in-out infinite; }
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-bounce-subtle { animation: bounce-subtle 2.4s ease-in-out infinite; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-4px) }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slower,
+  .animate-wiggle,
+  .animate-wiggle-slow,
+  .animate-pulse-soft,
+  .animate-bounce-subtle,
+  .animate-float { animation: none; }
+}
