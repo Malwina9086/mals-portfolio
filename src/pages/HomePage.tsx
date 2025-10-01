@@ -4,7 +4,10 @@ import { useI18n } from "../i18n";
 import { useReveal } from "../components/useReveal";
 import TypingCodeWindow from "../components/TypingCodeWindow";
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5606bca (Initial commit (full project from old laptop))
 export default function HomePage() {
   useReveal();
   const { t } = useI18n();
@@ -32,7 +35,13 @@ export default function HomePage() {
             </div>
           </div>
 
+<<<<<<< HEAD
        <p className="mt-6 text-lg text-zinc-600 dark:text-zinc-400 max-w-prose reveal reveal-delay-1"></p>
+=======
+          <p className="mt-6 text-lg text-muted-foreground max-w-prose reveal reveal-delay-1">
+            {t("home.lead")}
+          </p>
+>>>>>>> 5606bca (Initial commit (full project from old laptop))
 
           {/* OBA przyciski – jednakowe, zielone */}
           <div className="mt-6 flex flex-wrap gap-3 reveal reveal-delay-2">

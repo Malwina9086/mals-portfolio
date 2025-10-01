@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "mals-portfolio",
+			"path": "."
+		}
+	],
+	"settings": {
+		"css.validate": false,
+		"scss.validate": false,
+		"less.validate": false
+	}
+}
