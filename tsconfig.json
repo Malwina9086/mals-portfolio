@@ -1,15 +1,8 @@
 {
-<<<<<<< HEAD
-  "compilerOptions": {
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx"
-=======
   "files": [],
   "compilerOptions": {
     "strict": true,
     "forceConsistentCasingInFileNames": true
->>>>>>> 5606bca (Initial commit (full project from old laptop))
   },
   "references": [
     { "path": "./tsconfig.app.json" },
@@ -18,10 +11,6 @@
 }
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 5606bca (Initial commit (full project from old laptop))
 //{
   //"files": [],
   //"references": [
