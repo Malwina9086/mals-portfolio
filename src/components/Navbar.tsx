@@ -154,21 +154,27 @@ export default function Navbar() {
               <IconLinkedIn className="h-5 w-5" />
             </a>
 
+            {/* ⬇️ PRZEŁĄCZNIK MOTYWU (DESKTOP) – tłumaczony */}
             <button
               type="button"
               onClick={() => setDark((d) => !d)}
               className={BTN_SQ}
-              aria-label={dark ? "Wyłącz tryb ciemny" : "Włącz tryb ciemny"}
-              title={dark ? "Jasny" : "Ciemny"}
+              aria-label={
+                dark
+                  ? lang === "pl" ? "Wyłącz tryb ciemny" : "Turn off dark mode"
+                  : lang === "pl" ? "Włącz tryb ciemny" : "Turn on dark mode"
+              }
+              title={dark ? t("theme.light") : t("theme.dark")}
             >
               {dark ? "🌞" : "🌙"}
             </button>
 
+            {/* Przycisk zmiany języka */}
             <button
               type="button"
               onClick={toggleLang}
               className={BTN_SQ + " font-medium"}
-              aria-label="Zmień język"
+              aria-label={lang === "pl" ? "Switch language to English" : "Zmień język na polski"}
               title={lang === "pl" ? "Switch to English" : "Zmień na polski"}
             >
               {lang.toUpperCase()}
@@ -245,17 +251,23 @@ export default function Navbar() {
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
+            {/* ⬇️ PRZEŁĄCZNIK MOTYWU (MOBILE) – tłumaczony */}
             <button
               type="button"
               onClick={() => setDark((d) => !d)}
               className="group w-full text-left px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              title={dark ? t("theme.light") : t("theme.dark")}
             >
-              {dark ? "🌞 Jasny" : "🌙 Ciemny"}
+              {dark ? `🌞 ${t("theme.light")}` : `🌙 ${t("theme.dark")}`}
             </button>
+
+            {/* Zmiana języka */}
             <button
               type="button"
               onClick={toggleLang}
               className="group w-full text-left px-4 py-3 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              aria-label={lang === "pl" ? "Switch language to English" : "Zmień język na polski"}
+              title={lang === "pl" ? "Switch to English" : "Zmień na polski"}
             >
               {lang === "pl" ? "EN" : "PL"}
             </button>

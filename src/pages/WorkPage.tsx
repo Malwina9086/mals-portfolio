@@ -6,11 +6,14 @@ import ImageWithPlaceholder from "../components/ImageWithPlaceholder";
 import TechPill from "../components/TechPill";
 import { projects, type Project } from "../data/projects";
 
-const ALL_TAGS = Array.from(new Set(projects.flatMap((p) => p.tech))).sort();
-
 export default function WorkPage() {
-  useReveal(); // animacje zostają dla nagłówków itp.
-  const { t }: { t: (k: string) => string } = useI18n();
+  useReveal();
+  const { t, lang } = useI18n(); // ⬅️ potrzebujemy lang
+
+  const ALL_TAGS = useMemo(
+    () => Array.from(new Set(projects.flatMap((p) => p.tech))).sort(),
+    []
+  );
 
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
@@ -22,7 +25,7 @@ export default function WorkPage() {
   const onSearchKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape") {
       setQuery("");
-    setActiveTag(null);
+      setActiveTag(null);
     }
   }, []);
 
@@ -38,10 +41,9 @@ export default function WorkPage() {
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
     return projects.filter((p) => {
-      const haystack = `${p.title} ${p.description} ${p.tech.join(" ")}`.toLowerCase();
+      const haystack = `${p.title.pl} ${p.title.en} ${p.description.pl} ${p.description.en} ${p.tech.join(" ")}`.toLowerCase();
       const matchesQuery = q === "" || haystack.includes(q);
-      const matchesTag =
-        !activeTag || p.tech.some((t) => t.toLowerCase() === activeTag.toLowerCase());
+      const matchesTag = !activeTag || p.tech.some((t) => t.toLowerCase() === activeTag.toLowerCase());
       return matchesQuery && matchesTag;
     });
   }, [query, activeTag]);
@@ -58,12 +60,12 @@ export default function WorkPage() {
           value={query}
           onChange={onSearchChange}
           onKeyDown={onSearchKeyDown}
-          placeholder={t("work.search.placeholder") || "Szukaj (np. react, api…)"}
+          placeholder={t("work.search.placeholder")}
           className="w-full md:w-80 rounded-xl border px-3 py-2"
-          aria-label="Szukaj projektów"
+          aria-label={t("work.search.placeholder")}
         />
 
-        <div className="flex flex-wrap gap-2" aria-label="Filtruj po technologiach">
+        <div className="flex flex-wrap gap-2" aria-label="Filter by technology">
           {ALL_TAGS.map((tag) => {
             const checked = activeTag === tag;
             return (
@@ -72,7 +74,7 @@ export default function WorkPage() {
                 type="button"
                 onClick={() => onTagClick(tag)}
                 aria-pressed={checked}
-                title={`Filtr: ${tag}`}
+                title={`Filter: ${tag}`}
                 className="focus:outline-none"
               >
                 <TechPill name={tag} variant="solid" active={checked} size="sm" showIcon />
@@ -86,52 +88,47 @@ export default function WorkPage() {
             type="button"
             onClick={clearAll}
             className="md:ml-auto rounded-xl border px-3 py-1.5 text-sm hover:bg-muted"
-            aria-label="Wyczyść filtry"
-            title="Wyczyść filtry"
+            aria-label={t("work.clear")}
+            title={t("work.clear")}
           >
-            Wyczyść
+            {t("work.clear")}
           </button>
         )}
       </div>
 
       {/* Licznik */}
       <div className="mb-6 text-sm text-muted-foreground">
-        Wyniki: <span className="font-medium">{filtered.length}</span>
+        {t("work.results")}: <span className="font-medium">{filtered.length}</span>
       </div>
 
       {/* Siatka projektów */}
       {filtered.length === 0 ? (
-        <p className="text-muted-foreground">
-          Brak wyników dla wybranych filtrów.
-        </p>
+        <p className="text-muted-foreground">{t("work.noResults")}</p>
       ) : (
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {filtered.map((p: Project) => {
             const primaryLink = p.demoUrl || p.repoUrl;
             const CardRoot: React.ElementType = primaryLink ? "a" : "div";
-            const rootProps = primaryLink
-              ? { href: primaryLink, target: "_blank", rel: "noreferrer" }
-              : {};
+            const rootProps = primaryLink ? { href: primaryLink, target: "_blank", rel: "noreferrer" } : {};
 
             return (
               <CardRoot
                 key={p.id}
                 {...rootProps}
                 className={[
-                  // ⬇️ USUWAMY 'reveal' i delay – karty są zawsze widoczne
                   "group block cursor-pointer",
                   "rounded-2xl border border-zinc-300 dark:border-zinc-700 overflow-hidden",
                   "bg-white dark:bg-zinc-900",
                   "transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
                 ].join(" ")}
-                aria-label={`${p.title} — otwórz`}
+                aria-label={`${p.title[lang]} — open`}
               >
                 {p.image ? (
                   <ImageWithPlaceholder
                     src={p.image}
                     placeholderSrc={p.placeholder}
-                    alt={p.title}
+                    alt={p.title[lang]}
                     className="rounded-t-2xl"
                     aspectClassName="aspect-[16/10]"
                   />
@@ -140,8 +137,8 @@ export default function WorkPage() {
                 )}
 
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold">{p.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{p.description}</p>
+                  <h3 className="text-lg font-semibold">{p.title[lang]}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{p.description[lang]}</p>
 
                   <div className="mt-3 flex flex-wrap gap-2">
                     {p.tech.map((t) => (
@@ -160,7 +157,7 @@ export default function WorkPage() {
                         }}
                         className="inline-flex items-center justify-center rounded-xl px-3 py-2 bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95 transition"
                       >
-                        Demo
+                        {t("work.demo")}
                       </button>
                     )}
                     {p.repoUrl && (
@@ -173,7 +170,7 @@ export default function WorkPage() {
                         }}
                         className="inline-flex items-center justify-center rounded-xl px-3 py-2 border hover:bg-muted active:scale-95 transition"
                       >
-                        Repo
+                        {t("work.repo")}
                       </button>
                     )}
                   </div>
@@ -186,9 +183,9 @@ export default function WorkPage() {
 
       <div className="mt-10 text-center reveal reveal-delay-1">
         <p className="text-muted-foreground">
-          Masz pytania o projekty?{" "}
+          {t("work.footer")}{" "}
           <Link to="/contact" className="text-emerald-600 hover:underline">
-            Napisz do mnie
+            {t("work.footer.cta")}
           </Link>
           .
         </p>

@@ -1,17 +1,7 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
-import { messages } from "./dict";
-
-export type Lang = "pl" | "en";
-type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: (k: string) => string };
-
-const I18nCtx = createContext<Ctx | null>(null);
+// src/i18n/context.tsx
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { messages, type Lang } from "./dict";
+import { I18nCtx, type I18nCtxValue } from "./ctx";
 
 function guessFromNavigator(): Lang {
   const nav = navigator.language.toLowerCase();
@@ -30,18 +20,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, [lang]);
 
   const t = useMemo(() => {
-    const dict = messages[lang] ?? messages.en;
+    const dict = messages[lang] || messages.en;
     return (k: string) => dict[k] ?? k;
   }, [lang]);
 
-  const setLang = (l: Lang) => setLangState(l);
-  const value = useMemo(() => ({ lang, setLang, t }), [lang, t]);
+  const value = useMemo<I18nCtxValue>(
+    () => ({ lang, setLang: setLangState, t }),
+    [lang, t]
+  );
 
   return <I18nCtx.Provider value={value}>{children}</I18nCtx.Provider>;
-}
-
-export function useI18n() {
-  const ctx = useContext(I18nCtx);
-  if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
-  return ctx;
 }
